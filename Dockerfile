@@ -7,14 +7,24 @@ LABEL maintainer="mickaelyoshua"
 ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt /tmp/requirements.txt
+COPY ./requirements.dev.txt /tmp/requirements.dev.txt
 COPY ./app /app
 WORKDIR /app
 EXPOSE 8000
 
+# build an argument
+ARG DEV=false
     # creating a venv to avoid dependencies conflicts with the standard python environment
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r /tmp/requirements.txt && \
+    # if is in mode DEV (runing by trough docker-compose)
+    # Condition
+    if [ $DEV = "true" ]; \
+        # Execute if is true
+        then /py/bin/pip install -r /tmp/requirements.dev.txt; \
+    # end of if
+    fi && \
     rm -rf /tmp && \
     # best practice is not use the root user, so create a new one
     adduser \

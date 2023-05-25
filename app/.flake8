@@ -1,0 +1,6 @@
+[flake8]
+exclude = # tells flake8 to exclude these files frmo the linting
+    migrations,
+    __pycache__,
+    manage.py,
+    settings.py

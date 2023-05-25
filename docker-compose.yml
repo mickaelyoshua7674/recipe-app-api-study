@@ -5,9 +5,15 @@ services:
   app: # name of service
     build:
       context: . # build inside current directory
+      args:
+        - DEV=true # build an argument overwriting the Dockerfile
     ports:
       - "8000:8000" # my-machine:docker-container
     volumes:
       - ./app:/app # copy and sync /app folder
     command: > # command t run the service
       sh -c "python manage.py runserver 0.0.0.0:8000"
+
+# run linting - flake 8: docker compose run --rm app sh -c "flake8"
+# create django project: docker compose run --rm app sh -c "django-admin startproject app ."
+# run development server: docker compose up (server - http://127.0.0.1:8000/)
