@@ -21,4 +21,4 @@ jobs: # define a new job
         run: docker-compose run --rm app sh -c "python manage.py test" # run the unit test on project
       
       - name: Lint
-        run: docker-compose run --rm app sh -c "flake8" # run the linting
+        run: docker-compose run --rm app sh -c "flake8" # run linting
