@@ -1,0 +1,24 @@
+---
+name: Checks # name that will show in github actions
+
+on: [push] # trigger: run on push command
+
+jobs: # define a new job
+  test-lint: # called 'test-lint'
+    name: Test and Lint # name that will show in github actions
+    runs-on: ubuntu-20.04 # runner where will be running the job (OS)
+    steps: # what will run
+      - name: Login to Docker Hub # name of the step
+        uses: docker/login-action@v1 # use a pre-made action that is provided in GitHub Actions / this one is used to login to Docker
+        with: # parameters to login
+          username: ${{ secrets.DOCKERHUB_USER }} # secrets defined on github
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v2 # checks the code inside github actions job
+
+      - name: Test
+        run: docker-compose run --rm app sh -c "python manage.py test" # run the unit test on project
+      
+      - name: Lint
+        run: docker-compose run --rm app sh -c "flake8" # run the linting
