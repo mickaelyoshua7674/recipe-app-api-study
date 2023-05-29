@@ -11,8 +11,27 @@ services:
       - "8000:8000" # my-machine:docker-container
     volumes:
       - ./app:/app # copy and sync /app folder
-    command: > # command t run the service
+    command: > # command to run the service
       sh -c "python manage.py runserver 0.0.0.0:8000"
+    environment: # connection to the database
+      - DB_HOST=db
+      - DB_NAME=devdb # name of database
+      - DB_USER=devuser
+      - DB_PASS=changeme
+    depends_on: # tells that the "app" service depends on the "db" service
+      - db # wait for "db" to start before start "app"
+      
+  db:
+    image: postgres:13-alpine
+    volumes: # store/share in volume created bellow
+      - dev-db-data:/var/lib/poostgresql/data
+    environment: # set initial database config
+      - POSTGRES_DB=devdb # name of database
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme
+
+volumes:
+  dev-db-data:
 
 # run test: docker-compose run --rm app sh -c "python manage.py test"
 # run linting - flake 8: docker compose run --rm app sh -c "flake8"
