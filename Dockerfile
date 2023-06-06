@@ -17,6 +17,12 @@ ARG DEV=false
     # creating a venv to avoid dependencies conflicts with the standard python environment
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
+    # install postgresql package inside image
+    apk add --update --no-cache postgresql-client && \
+    # set virtual dependency package in '.tmp-build-deps'
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        # install dependency in folder
+        build-base postgresql-dev musl-dev && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     # if is in mode DEV (runing by trough docker-compose)
     # Condition
@@ -26,6 +32,7 @@ RUN python -m venv /py && \
     # end of if
     fi && \
     rm -rf /tmp && \
+    apk del .tmp-build-deps && \
     # best practice is not use the root user, so create a new one
     adduser \
         --disabled-password \
